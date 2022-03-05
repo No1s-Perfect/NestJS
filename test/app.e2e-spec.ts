@@ -59,11 +59,26 @@ describe('App e2e', () => {
       it('should throw if not body provided', () =>
         pactum.spec().post('/auth/signin').expectStatus(400));
       it('should signin', () =>
-        pactum.spec().post('/auth/signin').withBody(dto).expectStatus(200));
+        pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(dto)
+          .expectStatus(200)
+          .stores('userAt', 'access_token'));
     });
   });
   describe('User', () => {
-    describe('Get me', () => {});
+    describe('Get me', () => {
+      it('should get current user', () =>
+        pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200));
+    });
+
     describe('Edit User', () => {});
   });
 
@@ -71,7 +86,7 @@ describe('App e2e', () => {
     describe('Create bookmark', () => {});
     describe('Get bookmarks', () => {});
     describe('Get bookmark by id', () => {});
-    describe('Edit bookmark', () => {});
-    describe('Delete bookmark', () => {});
+    describe('Edit bookmark by id', () => {});
+    describe('Delete bookmark by id', () => {});
   });
 });
